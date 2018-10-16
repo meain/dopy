@@ -1,0 +1,31 @@
+#! /bin/bash
+
+while IFS='' read -r line || [[ -n "$line" ]]; do
+
+    filetype=$(echo "$line" | cut -f1 -d ' ')
+    link=$(echo "$line" | cut -f2 -d ' ')
+    location=$(echo "$line" | cut -f3 -d ' ')
+
+    echo "$(tput setaf 2)Fetching ${link} $(tput sgr0)"
+    if [ "$filetype" = "file" ]; then
+        mkdir -p "${location%/*}"
+        wget "$link" -O "$location"
+    elif [ "$filetype" = "zip" ]; then
+        mkdir -p "$location"
+        templocation=$(mktemp -d)
+        wget "$link" -O "$templocation/data.zip"
+        mkdir "$templocation/unzipped"
+        unzip "$templocation/data.zip" -d "$templocation/unzipped"
+        mv -f $templocation/unzipped/* "$location"
+        rm -rf "$templocation"
+    elif [ "$filetype" = "zipi" ]; then
+        mkdir -p "$location"
+        templocation=$(mktemp -d)
+        wget "$link" -O "$templocation/data.zip"
+        mkdir "$templocation/unzipped"
+        unzip "$templocation/data.zip" -d "$templocation/unzipped"
+        mv -f $templocation/unzipped/*/* "$location"
+        rm -rf "$templocation"
+    fi
+
+done < "$1"
