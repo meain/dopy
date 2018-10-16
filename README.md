@@ -19,6 +19,9 @@ file https://transfer.sh/fakelink/hello.txt ~/Documents/Projects/fakepath
 zip https://storage.googleapis.com/models_data/pavada ../somepath
 ```
 
+> Ideally keep this in the project root, and give relative paths
+> Path it is relative to where the script is run from
+
 
 ## Formats supported
 
